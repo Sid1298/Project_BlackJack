@@ -1,13 +1,25 @@
+'''
+This is a program for a simple BlackJack game
+A deck of 52 cards will be used and a single player plays against the dealer (computer)
+The player may place a bet 
+For simplicity, only features like hit and stand are available
+features like split, double, and insurance will be added in later versions
+'''
+
 import random
 
-suits = ('Spades', 'Hearts', 'Clubs', 'Diamonds')
-ranks = ('Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King')
+suits = ('Spades', 'Hearts', 'Clubs', 'Diamonds') # The four suits of cards in a deck
+ranks = ('Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King') # The thirteen ranks of cards
 values = {'Two': 2, 'Three': 3, 'Four': 4, 'Five': 5, 'Six': 6, 'Seven': 7, 'Eight': 8, 'Nine': 9, 'Ten': 10,
-          'Jack': 10, 'Queen': 10, 'King': 10, 'Ace': 11}
+          'Jack': 10, 'Queen': 10, 'King': 10, 'Ace': 11} # Values of all ranks for the game
 playing = True
 
 
 class Card:
+     '''
+     A class for making cards objects. These 52 unique cards are added to a deck.
+     Note : There is no use of Jokers in BlackJack so those cards are omitted.
+     '''
 
     def __init__(self, suit, rank):
         self.suit = suit
@@ -18,6 +30,10 @@ class Card:
 
 
 class Deck:
+    '''
+    A class for putting together a deck of cards.
+    The Card class is used to make the unique cards to put into the deck.
+    '''
 
     def __init__(self):
         self.deck = []
@@ -40,6 +56,10 @@ class Deck:
 
 
 class Hand:
+    '''
+    A class for building a hand with values for proceeding the game and deciding the winner.
+    The Card class is used.
+    '''
 
     def __init__(self):
         self.cards = []
@@ -57,6 +77,10 @@ class Hand:
 
 
 class Chips:
+    '''
+    Chips are used to bet. This is currency of this game.
+    A user gets 500 chips by default.
+    '''
 
     def __init__(self):
         self.total = 500
@@ -73,6 +97,12 @@ class Chips:
 
 
 def take_bet(chips):
+    '''
+    Takes input : an object of chips type
+    Output : sets a value for the bet attribute of Chips class
+    Function to take input of bet by the player and check if it exceeds the chips the player has
+    '''
+    
     while True:
         try:
             bet = int(input('Place your bet: '))
@@ -89,16 +119,35 @@ def take_bet(chips):
 
 
 def hit(deck, hand):
+    '''
+    Takes input arguments : an object of deck type, an object of hand type
+    Output : Calls functions of Hand class
+    Function to perform the hit action in a game of BlackJack (hit is when a player demands for a card from the dealer)
+    '''
+    
     hand.add_card(deck.deal())
     hand.adjust_for_aces()
 
 
 def stand():
+    '''
+    Takes no input argument
+    Output : boolean value
+    Function to operate on the global variable - playing. 
+    Function to perform the stand action in a game of BlackJack (stand is when the player wants no more cards)
+    '''
+
     global playing
     playing = False
 
 
 def hit_or_stand(deck, hand):
+    '''
+    Takes input : an object of Deck type, an object of Hand type
+    Output : calls hit or stand function as per user's request
+    Function to perform one of the actions of BlackJack as pepr user's request
+    '''
+
     while True:
         hit_stand = input('Press H to hit\nPress S to stand: ')
         if hit_stand.lower() == 'h':
@@ -112,6 +161,12 @@ def hit_or_stand(deck, hand):
 
 
 def show_some(player, dealer):
+    '''
+    Takes input : an object - player of Hand type, an object - dealer of Hand type
+    Output : prints the cards as per the need
+    Function to show some cards while the player plays
+    '''
+    
     print('Dealer\'s Hand: ')
     print('<Hidden Card>', dealer.cards[1])
     print('Player\'s Hand: ')
@@ -119,6 +174,12 @@ def show_some(player, dealer):
 
 
 def show_all(player, dealer):
+    '''
+    Takes input : an object - player of Hand type, an object - dealer of Hand type
+    Output : prints the cards as per the need
+    Function to show all cards when the player stands
+    '''
+          
     print('Dealer\'s Hand: \n', *dealer.cards, sep='\t')
     print('Dealer Value : ', dealer.value)
     print('\nPlayer\'s Hand: \n', *player.cards, sep='\t')
@@ -126,28 +187,60 @@ def show_all(player, dealer):
 
 
 def player_busts(player, dealer, chips):
+    '''
+    Takes input : object of Hand type - player, object of Hand type - dealer, object of Chips type - chips
+    Output : calls funtion from Chips class
+    Function performs bust action if the player is busted (player loses)
+    '''
+    
     print('Busted! Better Luck Next Time!!')
     chips.lose_bet()
 
 
 def player_wins(player, dealer, chips):
+    '''
+    Takes input : object of Hand type - player, object of Hand type - dealer, object of Chips type - chips
+    Output : calls funtion from Chips class
+    Function performs the player winning action (player wins)
+    '''
+    
     print('You win! Congratulations!!')
     chips.win_bet()
 
 
 def dealer_busts(player, dealer, chips):
+    '''
+    Takes input : object of Hand type - player, object of Hand type - dealer, object of Chips type - chips
+    Output : calls funtion from Chips class
+    Function performs the player winning action if the dealer is busted (player wins)
+    '''
+
     print('Dealer Busted! Congratulations!!')
     chips.win_bet()
 
 
 def dealer_wins(player, dealer, chips):
+    '''
+    Takes input : object of Hand type - player, object of Hand type - dealer, object of Chips type - chips
+    Output : calls funtion from Chips class
+    Function performs the lose action (player loses)
+    '''
+
     print('You Lose! Better Luck Next Time!!')
     chips.lose_bet()
 
 
 def pushed(player, dealer):
+    '''
+    Takes input : object of Hand type - player, object of Hand type - dealer
+    Output : prints the outcome as per the situation
+    Function performs the push action of the game when the dealer ties with the player
+    '''
+
     print('Pushed!')
 
+
+# now to play the game
 
 if __name__ == '__main__':
     while True:
